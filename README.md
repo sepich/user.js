@@ -1,10 +1,11 @@
 user.js
 =======
 
-Greasemonkey scripts
+Greasemonkey scripts.   
+For installation please use: https://openuserjs.org/users/sepich/scripts
 
-Wikipedia goes 3 columns (wikipedia3c.user.js)
-----------------------------------------------
+##### Wikipedia goes 3 columns
+
 Display wikipedia article text in 3 columns for widescreen displays
 - Display wikipedia article text in 3 columns
 - Hide menu and ads 
@@ -15,6 +16,6 @@ Display wikipedia article text in 3 columns for widescreen displays
 Full sized screenshot:  
 [![Click for full size](http://3.bp.blogspot.com/-cmqD3fDPoMA/UmtpdelHZ_I/AAAAAAAAtWE/IlxgMhM4xHA/s500/wiki.jpg)](http://3.bp.blogspot.com/-cmqD3fDPoMA/UmtpdelHZ_I/AAAAAAAAtWE/IlxgMhM4xHA/s1600/wiki.jpg)
 
-Footprints (fp.user.js)
------------------------
-Minor FootPrints improvements
+##### Footprints
+
+Minor BMC Footprints improvements
