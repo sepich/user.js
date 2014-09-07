@@ -76,6 +76,8 @@ function main() {
     esc=esc.replace(/defang_@/g,'@');
     esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
     esc=esc.replace(/\r\n|\n/g,'<br>');
+    esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
+    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
     t.css('display','none');
     jQ('label#ESC__bNotes_label').css('display','none');
     jQ('div#ESC__bNotes').after('<div id="esc_note">'+esc+'</div>');
@@ -83,7 +85,7 @@ function main() {
   
   //edit case
   if(jQ('#ESC__bNotes_originalData').length){
-  	var esc="\n"+jQ('#ESC__bNotes_originalData').val();
+    var esc="\n"+jQ('#ESC__bNotes_originalData').val();
     esc=esc.replace(/<!--defang_/g,'&lt;');
     esc=esc.replace(/</g,'&lt;');
     esc=esc.replace(/-->/g,'&gt;');
@@ -91,8 +93,10 @@ function main() {
     esc=esc.replace(/defang_@/g,'@');
     esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"<b class='esc_user'>\$1</b>");
     esc=esc.replace(/\r\n|\n/g,'<br>');
+    esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
+    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
     jQ('textarea#ESC__bNotes').css('width','90%');
-  	jQ('div#ESC__bNotes_originalDataDiv').parent('div').append('<div id="esc_notes">'+esc+'</div>');
+    jQ('div#ESC__bNotes_originalDataDiv').parent('div').append('<div id="esc_notes">'+esc+'</div>');
   }
 }
 
