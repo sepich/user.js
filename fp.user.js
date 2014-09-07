@@ -34,18 +34,18 @@ function addJQuery(callback) {
 function main() {
 	function hereDoc(f) { return f.toString().replace(/^[^\/]+\/\*!?/, '').replace(/\*\/[^\/]+$/, ''); }
   var css = hereDoc(function() {/*!
-  textarea { resize: both;}
-  #esc_notes{
-   height: 300px;
-   overflow: auto;
-   border: 1px solid #AAA;
-   width: 90%;
-   white-space: pre-line;
-  }
-  b.esc_user {
-   border-top: 1px solid #CCC;
-   display: block;
-  }
+    textarea { resize: both;}
+    #esc_notes{
+     height: 300px;
+     overflow: auto;
+     border: 1px solid #AAA;
+     width: 90%;
+     white-space: pre-line;
+    }
+    b.esc_user {
+     border-top: 1px solid #CCC;
+     display: block;
+    }
   */});
 
   jQ('head').append('<style type="text/css" id="tbl-css">');
@@ -56,19 +56,19 @@ function main() {
   //change control editing
   if(jQ('select#Impacted__bServices').length){
   	jQ('select#Impacted__bServices').css('height','300px');
-      jQ('select#Impacted__bProduction__bUnit').css('height','300px');
+    jQ('select#Impacted__bProduction__bUnit').css('height','300px');
   }
   
   //view case
   if(jQ('div#ESC__bNotes textarea').length){
     console.log('view case');
-  	var t=jQ('div#ESC__bNotes textarea'),
-        esc="\n"+jQ('input#ESC__bNotes').val();
-      
     if(jQ('input#Account__bNotes').length){
-      notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
+      var notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
       jQ('div#Account__bNotes').html(notes);
-    }        
+    }
+    
+    var t=jQ('div#ESC__bNotes textarea'),
+        esc="\n"+jQ('input#ESC__bNotes').val();       
     esc=esc.replace(/<!--defang_/g,'&lt;');
     esc=esc.replace(/</g,'&lt;');
     esc=esc.replace(/-->/g,'&gt;');
@@ -85,6 +85,7 @@ function main() {
   
   //edit case
   if(jQ('#ESC__bNotes_originalData').length){
+    console.log('edit case');
     var esc="\n"+jQ('#ESC__bNotes_originalData').val();
     esc=esc.replace(/<!--defang_/g,'&lt;');
     esc=esc.replace(/</g,'&lt;');
@@ -97,6 +98,24 @@ function main() {
     esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
     jQ('textarea#ESC__bNotes').css('width','90%');
     jQ('div#ESC__bNotes_originalDataDiv').parent('div').append('<div id="esc_notes">'+esc+'</div>');
+  }
+  
+  //view GIRR
+  if(jQ('#Root__bCause').length){
+    console.log('view GIRR');
+    var t=jQ('div#Notes textarea'),
+        esc="\n"+jQ('input#Notes').val();       
+    esc=esc.replace(/<!--defang_/g,'&lt;');
+    esc=esc.replace(/</g,'&lt;');
+    esc=esc.replace(/-->/g,'&gt;');
+    esc=esc.replace(/>/g,'&gt;');
+    esc=esc.replace(/defang_@/g,'@');
+    esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
+    esc=esc.replace(/\r\n|\n/g,'<br>');
+    esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
+    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
+    t.css('display','none');
+    jQ('div#Notes').after('<div id="esc_note">'+esc+'</div>');   
   }
 }
 
