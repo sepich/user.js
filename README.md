@@ -17,4 +17,4 @@ Full sized screenshot:
 
 Footprints (fp.user.js)
 -----------------------
-Some FootPrints improvements
+Minor FootPrints improvements
