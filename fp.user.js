@@ -32,7 +32,7 @@ function addJQuery(callback) {
 
 // the guts of this userscript
 function main() {
-	function hereDoc(f) { return f.toString().replace(/^[^\/]+\/\*!?/, '').replace(/\*\/[^\/]+$/, ''); }
+  function hereDoc(f) { return f.toString().replace(/^[^\/]+\/\*!?/, '').replace(/\*\/[^\/]+$/, ''); }
   var css = hereDoc(function() {/*!
     textarea { resize: both;}
     #esc_notes{
@@ -50,12 +50,12 @@ function main() {
 
   jQ('head').append('<style type="text/css" id="tbl-css">');
   jQ('#tbl-css').html(css);    
-	jQ('#assgnee').css('height','300px');
-	jQ('#pmember').css('height','300px');
+  jQ('#assgnee').css('height','300px');
+  jQ('#pmember').css('height','300px');
     
   //change control editing
   if(jQ('select#Impacted__bServices').length){
-  	jQ('select#Impacted__bServices').css('height','300px');
+    jQ('select#Impacted__bServices').css('height','300px');
     jQ('select#Impacted__bProduction__bUnit').css('height','300px');
   }
   
