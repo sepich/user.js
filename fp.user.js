@@ -7,8 +7,8 @@
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
 // @run-at      document-end
-// @updateURL   https://i.sepa.spb.ru/_/imedia/fp.user.js
-// @downloadURL https://i.sepa.spb.ru/_/imedia/fp.user.js
+// @updateURL   https://openuserjs.org/install/sepich/FP.user.js
+// @downloadURL https://openuserjs.org/install/sepich/FP.user.js
 // @author      i@sepa.spb.ru
 // ==/UserScript==
 console.log('started');
