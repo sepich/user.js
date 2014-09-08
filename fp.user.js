@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.09.08
+// @version     2014.09.09
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
@@ -46,6 +46,7 @@ function main() {
      border-top: 1px solid #CCC;
      display: block;
     }
+    u { font-family: monospace; text-decoration:none;}
   */});
 
   jQ('head').append('<style type="text/css" id="tbl-css">');
@@ -77,7 +78,7 @@ function main() {
     esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
     esc=esc.replace(/\r\n|\n/g,'<br>');
     esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
-    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
+    esc=esc.replace(/ (gid:)(\S+) /g,' <a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1</a> <u>$2</u> ");
     t.css('display','none');
     jQ('label#ESC__bNotes_label').css('display','none');
     jQ('div#ESC__bNotes').after('<div id="esc_note">'+esc+'</div>');
@@ -95,7 +96,7 @@ function main() {
     esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"<b class='esc_user'>\$1</b>");
     esc=esc.replace(/\r\n|\n/g,'<br>');
     esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
-    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
+    esc=esc.replace(/ (gid:)(\S+) /g,' <a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1</a> <u>$2</u> ");
     jQ('textarea#ESC__bNotes').css('width','90%');
     jQ('div#ESC__bNotes_originalDataDiv').parent('div').append('<div id="esc_notes">'+esc+'</div>');
   }
@@ -113,7 +114,7 @@ function main() {
     esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
     esc=esc.replace(/\r\n|\n/g,'<br>');
     esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
-    esc=esc.replace(/(gid:)(\S+) /g,'<a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1$2</a> ");
+    esc=esc.replace(/ (gid:)(\S+) /g,' <a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1</a> <u>$2</u> ");
     t.css('display','none');
     jQ('div#Notes').after('<div id="esc_note">'+esc+'</div>');   
   }
