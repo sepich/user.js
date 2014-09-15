@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.09.09
+// @version     2014.09.15
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
@@ -69,6 +69,29 @@ function main() {
     }
     
     var t=jQ('div#ESC__bNotes textarea'),
+        esc="\n"+jQ('input#ESC__bNotes').val();       
+    esc=esc.replace(/<!--defang_/g,'&lt;');
+    esc=esc.replace(/</g,'&lt;');
+    esc=esc.replace(/-->/g,'&gt;');
+    esc=esc.replace(/>/g,'&gt;');
+    esc=esc.replace(/defang_@/g,'@');
+    esc=esc.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
+    esc=esc.replace(/\r\n|\n/g,'<br>');
+    esc=esc.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
+    esc=esc.replace(/ (gid:)(\S+) /g,' <a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1</a> <u>$2</u> ");
+    t.css('display','none');
+    jQ('label#ESC__bNotes_label').css('display','none');
+    jQ('div#ESC__bNotes').after('<div id="esc_note">'+esc+'</div>');
+  }  
+  //or view archive case
+  else if(jQ('div#ESC__bNotes input#ESC__bNotes').length){
+    console.log('view archive case');
+    if(jQ('input#Account__bNotes').length){
+      var notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
+      jQ('div#Account__bNotes').html(notes);
+    }
+    
+    var t=jQ('div#ESC__bNotes'),
         esc="\n"+jQ('input#ESC__bNotes').val();       
     esc=esc.replace(/<!--defang_/g,'&lt;');
     esc=esc.replace(/</g,'&lt;');
