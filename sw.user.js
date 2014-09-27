@@ -4,6 +4,8 @@
 // @namespace   foobar
 // @version     2014.09.24
 // @include     http://eiger.accessline.com/sw/SmartWatcher.html?*
+// @updateURL   https://openuserjs.org/install/sepich/SW.user.js
+// @downloadURL https://openuserjs.org/install/sepich/SW.user.js
 // @grant       none
 // ==/UserScript==
 
