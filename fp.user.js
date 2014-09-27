@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.09.15
+// @version     2014.09.27
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
@@ -67,6 +67,9 @@ function main() {
       var notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
       jQ('div#Account__bNotes').html(notes);
     }
+    jQ('div#HP__bUsername').contents().each(function() {
+      if(this.nodeType == 3) jQ(this).wrap('<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">');
+    });
     
     var t=jQ('div#ESC__bNotes textarea'),
         esc="\n"+jQ('input#ESC__bNotes').val();       
@@ -90,6 +93,9 @@ function main() {
       var notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
       jQ('div#Account__bNotes').html(notes);
     }
+    jQ('div#HP__bUsername').contents().each(function() {
+      if(this.nodeType == 3) jQ(this).wrap('<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">');
+    });
     
     var t=jQ('div#ESC__bNotes'),
         esc="\n"+jQ('input#ESC__bNotes').val();       
