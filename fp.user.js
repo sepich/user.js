@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.09.27
+// @version     2014.10.04
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
@@ -68,7 +68,11 @@ function main() {
       jQ('div#Account__bNotes').html(notes);
     }
     jQ('div#HP__bUsername').contents().each(function() {
-      if(this.nodeType == 3) jQ(this).wrap('<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">');
+      if(this.nodeType == 3) {
+        jQ(this).after(')');
+        if(/al-[0-9]+/.test(jQ(this).text()) ) jQ(this).after('/<a href="https://eiger.accessline.com/atlas/page/enterprise/lf/view/'+jQ(this).text().replace(/^al-/,'')+'" target="_blank">Atlas</a>');
+        jQ(this).after(' (<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">HP</a>');
+      }
     });
     
     var t=jQ('div#ESC__bNotes textarea'),
@@ -94,7 +98,11 @@ function main() {
       jQ('div#Account__bNotes').html(notes);
     }
     jQ('div#HP__bUsername').contents().each(function() {
-      if(this.nodeType == 3) jQ(this).wrap('<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">');
+      if(this.nodeType == 3) {
+        jQ(this).after(')');
+        if(/al-[0-9]+/.test(jQ(this).text()) ) jQ(this).after('/<a href="https://eiger.accessline.com/atlas/page/enterprise/lf/view/'+jQ(this).text().replace(/^al-/,'')+'" target="_blank">Atlas</a>');
+        jQ(this).after(' (<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">HP</a>');
+      }
     });
     
     var t=jQ('div#ESC__bNotes'),
