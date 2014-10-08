@@ -16,8 +16,8 @@
 // @icon        http://www.intermedia.net/apple-touch-icon-57-precomposed.png
 // @grant       unsafeWindow
 // @run-at      document-start
-// @updateURL   https://i.sepa.spb.ru/_/imedia/hplsa.user.js
-// @downloadURL https://i.sepa.spb.ru/_/imedia/hplsa.user.js
+// @updateURL   https://openuserjs.org/install/sepich/HPforLSA.user.js
+// @downloadURL https://openuserjs.org/install/sepich/HPforLSA.user.js
 // @author      i@sepa.spb.ru
 // ==/UserScript==
 console.log('started');
