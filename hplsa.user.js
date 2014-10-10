@@ -458,9 +458,9 @@ else if(window.location.pathname=='/asp/Administrator/Menu.asp') {
   ping = function(){
     if(document.readyState == "complete"){
       $ = unsafeWindow.jQuery;
-      $.ajax('/asp/Administrator/Menu.asp');
+      $.ajax('/asp/Administrator/LookupAccounts.asp');
     }
-    setTimeout(ping, 1000*60*15);
+    setTimeout(ping, 1000*60*5);
   }    
-  setTimeout(ping, 1000*60*15);
+  setTimeout(ping, 1000*60*5);
 }
