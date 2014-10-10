@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2014.10.08
+// @version     2014.10.09
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/Configuration.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp*
