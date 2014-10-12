@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.10.04
+// @version     2014.10.12
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @grant       unsafeWindow
@@ -62,18 +62,20 @@ function main() {
   
   //view case
   if(jQ('div#ESC__bNotes textarea').length){
+    var id;
     console.log('view case');
     if(jQ('input#Account__bNotes').length){
       var notes=jQ('input#Account__bNotes').val().replace(/\r\n|\n/g,'<br>');
       jQ('div#Account__bNotes').html(notes);
-    }
+    }  
     jQ('div#HP__bUsername').contents().each(function() {
       if(this.nodeType == 3) {
         jQ(this).after(')');
+        if( /^S[EW]H$/.test(jQ('#HP__bProduct').text()) ) jQ(this).after('/<a href="https://hosting.intermedia.net/asp/User/LoginToAccount.asp?accountID='+jQ('#Organization').text()+'" target="_blank">Login</a>');
         if(/al-[0-9]+/.test(jQ(this).text()) ) jQ(this).after('/<a href="https://eiger.accessline.com/atlas/page/enterprise/lf/view/'+jQ(this).text().replace(/^al-/,'')+'" target="_blank">Atlas</a>');
         jQ(this).after(' (<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">HP</a>');
       }
-    });
+    });    
     
     var t=jQ('div#ESC__bNotes textarea'),
         esc="\n"+jQ('input#ESC__bNotes').val();       
@@ -100,6 +102,7 @@ function main() {
     jQ('div#HP__bUsername').contents().each(function() {
       if(this.nodeType == 3) {
         jQ(this).after(')');
+        if( /^S[EW]H$/.test(jQ('#HP__bProduct').text()) ) jQ(this).after('/<a href="https://hosting.intermedia.net/asp/User/LoginToAccount.asp?accountID='+jQ('#Organization').text()+'" target="_blank">Login</a>');        
         if(/al-[0-9]+/.test(jQ(this).text()) ) jQ(this).after('/<a href="https://eiger.accessline.com/atlas/page/enterprise/lf/view/'+jQ(this).text().replace(/^al-/,'')+'" target="_blank">Atlas</a>');
         jQ(this).after(' (<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">HP</a>');
       }
