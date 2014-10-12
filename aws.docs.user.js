@@ -2,7 +2,7 @@
 // @name        AWS Docs Column Reader
 // @description Display AWS docs in multiple columns for wide monitors
 // @namespace   sepa.spb.ru
-// @version     2014.10.12.2
+// @version     2014.10.12.3
 // @include     http://docs.aws.amazon.com/*
 // @include     https://docs.aws.amazon.com/*
 // @icon        http://media.amazonwebservices.com/favicon.ico
@@ -51,7 +51,7 @@ for(var i=0; i<n.length; i++){
          if(this.nodeName=="DIV" && $(this).hasClass('section') && $(this).has('h2').length ) return false; //break
     else if(this.nodeName=="DIV" && $(this).hasClass('d-col'))   return true;  //continue
     else if(this.nodeName=="TABLE" || 
-           (this.nodeName=="DIV" && ( $(this).hasClass('mediaobject') || $(this).has('img').length ))           
+           (this.nodeName=="DIV" && ( $(this).hasClass('mediaobject') || $(this).hasClass('informaltable') || $(this).has('img').length ))           
            ){
       $(this).after("<div class='d-col'/>");
       d=$("div.d-col").last();
