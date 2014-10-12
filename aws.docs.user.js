@@ -2,12 +2,12 @@
 // @name        AWS Docs Column Reader
 // @description Display AWS docs in multiple columns for wide monitors
 // @namespace   sepa.spb.ru
-// @version     2014.10.12
+// @version     2014.10.12.2
 // @include     http://docs.aws.amazon.com/*
 // @include     https://docs.aws.amazon.com/*
 // @icon        http://media.amazonwebservices.com/favicon.ico
 // @grant       GM_getResourceText
-// @updateURL   https://openuserjs.org/install/sepich/aws.docs.user.js
+// @updateURL   https://openuserjs.org/install/sepich/AWS_Docs_Column_Reader.user.js
 // @require     http://code.jquery.com/jquery-latest.min.js
 // @author      i@sepa.spb.ru
 // ==/UserScript==
