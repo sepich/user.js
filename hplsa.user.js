@@ -2,15 +2,13 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2014.12.10
+// @version     2014.12.13
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-diff.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/theme-clouds.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ext-searchbox.js
-// @ require     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ext-settings_menu.js
-// @ require     https://threedubmedia.googlecode.com/files/jquery.event.drag-2.0.js
+// @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
+// @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
+// @resource diff   https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-diff.js
+// @resource theme  https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/theme-clouds.js
+// @resource search https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ext-searchbox.js
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/Configuration.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp*
@@ -23,12 +21,12 @@
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Menu.asp
 // @icon        http://www.intermedia.net/apple-touch-icon-57-precomposed.png
 // @run-at      document-start
+// @grant       GM_getResourceText
 // @updateURL   https://openuserjs.org/install/sepich/HPforLSA.user.js
 // @downloadURL https://openuserjs.org/install/sepich/HPforLSA.user.js
 // @author      i@sepa.spb.ru
 // ==/UserScript==
 console.log('started');
-//ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/");
 var $ = jQuery,
     setTimeoutCount = 0,
     setTimeoutCountMax = 6000,
@@ -62,6 +60,24 @@ div.ace_scrollbar {bottom: 16px !important;}
 }
 */});
 
+//use cached ace edit
+function insertCached(m){
+  var res = ['ace', 'sh', 'search'],
+      s;
+  //addons for diff display
+  if(m == 'diff') {
+    res.push('diff');
+    res.push('theme');
+  }
+  //injecting resourses to page
+  console.log('inject: '+res);
+  for (var i in res) {
+    s = document.createElement("script");
+    s.textContent = GM_getResourceText(res[i]);
+    document.head.appendChild(s);
+  }
+}
+
 console.log(window.location.pathname);
 //Run-Command
 if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp'){
@@ -72,7 +88,7 @@ if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp
     setTimeoutCount += 1;
     console.log('init-'+setTimeoutCount);
 
-    if (typeof($)=='function' && $('#boxesCountSpan').length) {
+    if ($('#boxesCountSpan').length) {
       $('head').append('<style type="text/css" id="tbl-css">');
       $('#tbl-css').html(css);
       $('form').attr('target','_blank');
@@ -146,10 +162,9 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       setTimeoutCount += 1;
       console.log('init-'+setTimeoutCount);
 
-  	// only load editor when there is editing field
-  	if (typeof($)=='function') {
-      $('head').append('<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript">');
-      //$('head').append('<script src="https://raw.githubusercontent.com/threedubmedia/jquery.threedubmedia/master/event.drag/jquery.event.drag.js">');
+    // only load editor when there is editing field
+    if (typeof($)=='function') {
+      insertCached();
       $('head').append('<style type="text/css" id="ace-css">');
       $('#ace-css').html(css);
       setTimeout(initDiv, setTimeoutDelay);
@@ -168,7 +183,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       t.css('height', '0px');
       $('form table')[1].setAttribute('width','100%');
 
-      var editDiv = $('<div>', {
+      $('<div>', {
           position: 'absolute',
           width: '100%',
           height: '700px',
@@ -186,8 +201,9 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     setTimeoutCount += 1;
     console.log('initEd-'+setTimeoutCount);
 
-    if(typeof(ace)=="object"){
-      var editor = ace.edit("editor"),
+    if(typeof(unsafeWindow.ace)=="object"){
+      unsafeWindow.ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/");
+      var editor = unsafeWindow.ace.edit("editor"),
           ed=$("#editor");
       editor.getSession().setValue(t.val());
       editor.getSession().setMode("ace/mode/sh");
@@ -204,57 +220,21 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       editor.resize();
 
       $('#editor').append('<div id="resize">');
-      $("#resize").attr('draggable','true');
-      $("#resize").bind('dragstart', function(event) {
-          ed.data("height", ed.height());
-          ed.data("y", event.pageY);
-      }).bind("drag", function(event) {
-          ed.height(Math.max(ed.data("height") - ed.data("y") + event.pageY, 300)+ "px");
-      }).bind('dragend', function(event) {
-          editor.resize();
+      $("#resize").mousedown(function(e){
+        e.preventDefault();
+        ed.data("height", ed.height());
+        ed.data("y", e.pageY);
+        $(document).mousemove(function(e){
+          ed.height(Math.max(ed.data("height") - ed.data("y") + e.pageY, 300)+ "px");
+       })
       });
-
-      editor.commands.addCommands([{
-        name: "increaseFontSize",
-        bindKey: "Ctrl-=",
-        exec: function(editor) {
-            var size = parseInt(editor.getFontSize(), 10) || 12;
-            editor.setFontSize(size + 1);
+      $(document).mouseup(function(e){
+        if(ed.data("height")){
+          ed.data("height", 0);
+          $(document).unbind('mousemove');
+          editor.resize();
         }
-      }, {
-        name: "decreaseFontSize",
-        bindKey: "Ctrl+-",
-        exec: function(editor) {
-            var size = parseInt(editor.getFontSize(), 10) || 12;
-            editor.setFontSize(Math.max(size - 1 || 1));
-        }
-      }, {
-        name: "save",
-        bindKey: {win: "Ctrl-S", mac: "Command-S"},
-        exec: function(arg) {
-            var session = editor.session;
-            var name = $('select[name=configFile] :selected').text(); //.match(/[^\/]+$/);
-            localStorage.setItem(
-                "saved_file:" + name,
-                session.getValue()
-            );
-            console.log("saved "+ name);
-        }
-      }, {
-        name: "load",
-        bindKey: {win: "Ctrl-O", mac: "Command-O"},
-        exec: function(arg) {
-            var session = editor.session;
-            var name = $('select[name=configFile] :selected').text();//.match(/[^\/]+$/);
-            var value = localStorage.getItem("saved_file:" + name);
-            if (typeof value == "string") {
-                session.setValue(value);
-                console.log("loaded "+ name);
-            } else {
-                console.log("no previuos value saved for "+ name);
-            }
-        }
-      }]);
+      });
 
       $('input[value="Save This Version To DB"]').mousedown(function(){
         t.val(editor.getSession().getValue());
@@ -267,199 +247,203 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
 
    //wait for Table load and fix it
   initTbl = function () {
-      setTimeoutCount += 1;
-      console.log('initTbl-'+setTimeoutCount);
+    setTimeoutCount += 1;
+    console.log('initTbl-'+setTimeoutCount);
 
-      if ($('#uploadButton').length) {
-          $('input[name=uploadCheckAll]').closest('table').addClass('srv');
-          $('input[id$=_checkbox]').removeAttr('disabled');
-          $('input[id$=_checkbox]').change(function(){
-              if(this.checked) { $(this).closest('tr').addClass('sel'); }
-              else { $(this).closest('tr').removeClass('sel'); }
+    if ($('#uploadButton').length) {
+      $('input[name=uploadCheckAll]').closest('table').addClass('srv');
+      $('input[id$=_checkbox]').removeAttr('disabled');
+      $('input[id$=_checkbox]').change(function(){
+        if(this.checked) { $(this).closest('tr').addClass('sel'); }
+        else { $(this).closest('tr').removeClass('sel'); }
+      });
+
+      var $chkboxes = $('input[id$=_checkbox]');
+      $chkboxes.click(function(e){
+        if(!lastChecked) {
+          lastChecked = this;
+          return;
+        }
+        if(e.shiftKey) {
+          var start = $chkboxes.index(this);
+          var end = $chkboxes.index(lastChecked);
+
+          $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
+            $(this).attr('checked', lastChecked.checked);
+            $(this).trigger('change');
           });
+        }
 
-          var $chkboxes = $('input[id$=_checkbox]');
-          $chkboxes.click(function(e){
-              if(!lastChecked) {
-                  lastChecked = this;
-                  return;
-              }
-              if(e.shiftKey) {
-                  var start = $chkboxes.index(this);
-                  var end = $chkboxes.index(lastChecked);
-
-                  $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
-                      $(this).attr('checked', lastChecked.checked);
-                      $(this).trigger('change');
-                  });
-              }
-
-              lastChecked = this;
-          });
+        lastChecked = this;
+      });
 
 
-          $('input[name=uploadCheckAll]').change(function(){
-              if(this.checked) { $('input[id$=_checkbox]').trigger('change'); }
-              else{ $('.srv tr').removeClass('sel'); }
-          });
+      $('input[name=uploadCheckAll]').change(function(){
+        if(this.checked) { $('input[id$=_checkbox]').trigger('change'); }
+        else{ $('.srv tr').removeClass('sel'); }
+      });
 
-          $('#uploadButton').removeAttr('disabled');
+      $('#uploadButton').removeAttr('disabled');
 
-          var $ahash = $('table.srv tr a');
-          $ahash.attr('href','')
-          $ahash.click(function(){
-              return false;
-          })
+      var $ahash = $('table.srv tr a');
+      $ahash.attr('href','')
+      $ahash.click(function(){
+          return false;
+      })
 
-          setTimeout(initTbl2, setTimeoutDelay);
-      }
-      else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initTbl, setTimeoutDelay); }
+      setTimeout(initTbl2, setTimeoutDelay);
+    }
+    else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initTbl, setTimeoutDelay); }
   }
 
    //wait for Table stops load and fix it
   initTbl2 = function () {
-      setTimeoutCount += 1;
-      console.log('initTbl2-'+setTimeoutCount);
+    setTimeoutCount += 1;
+    console.log('initTbl2-'+setTimeoutCount);
 
-      if ( $('#countTotal').text() != '?' ) {
-          var $ahash = $('table.srv tr a[href=#]');
-          $ahash.attr('href','')
-          $ahash.click(function(){
-              return false;
-          })
-      }
-      else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initTbl2, setTimeoutDelay); }
+    if ( $('#countTotal').text() != '?' ) {
+      var $ahash = $('table.srv tr a[href=#]');
+      $ahash.attr('href','')
+      $ahash.click(function(){
+          return false;
+      })
+    }
+    else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initTbl2, setTimeoutDelay); }
   }
 
   setTimeout(init, setTimeoutDelay);
 }
 //FileHistory compare or FileContenet view (ReadOnly)
 else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp') {
-    var $,
-        t,
+    var t,
         lastChecked = null,
-    	init, initDiv, initEditor;
+        init, initDiv, initEditor;
 
     //wait for jquery and preload Ace
     init = function () {
-        setTimeoutCount += 1;
-        console.log('init-'+setTimeoutCount);
+      setTimeoutCount += 1;
+      console.log('init-'+setTimeoutCount);
 
-    	// only load editor when there is editing field
-    	if (typeof($)=='function') {
-            $('head').append('<style type="text/css" id="ace-css">');
-            $('head').append('<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript">');
-            //$('head').append('<script src="https://raw.githubusercontent.com/threedubmedia/jquery.threedubmedia/master/event.drag/jquery.event.drag.js">');
-            $('#ace-css').html(css);
-            setTimeout(initDiv, setTimeoutDelay);
-    	}
-        else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
+      // only load editor when there is editing field
+      if (typeof($)=='function') {
+        $('head').append('<style type="text/css" id="ace-css">');
+        insertCached('diff');
+        $('#ace-css').html(css);
+        setTimeout(initDiv, setTimeoutDelay);
+      }
+      else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
     }
 
     //wait for textarea and replace it
     initDiv =function(){
-        setTimeoutCount += 1;
-        console.log('initDiv-'+setTimeoutCount);
+      setTimeoutCount += 1;
+      console.log('initDiv-'+setTimeoutCount);
 
-        t = $('textarea[name=content]');
-        if (t.length) {
-            t.css('visibility', 'hidden');
-            t.css('height', '0px');
+      t = $('textarea[name=content]');
+      if (t.length) {
+        t.css('visibility', 'hidden');
+        t.css('height', '0px');
 
-            var editDiv = $('<div>', {
-                position: 'absolute',
-                width: '100%',
-                height: '620px',
-                id: 'editor'
-            }).insertBefore(t);
+        var editDiv = $('<div>', {
+            position: 'absolute',
+            width: '100%',
+            height: '620px',
+            id: 'editor'
+        }).insertBefore(t);
 
-            setTimeout(initEditor, setTimeoutDelay);
-        }
-        else if (document.readyState == "complete") { setTimeoutCount=setTimeoutCountMax; }
-        else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initDiv, setTimeoutDelay); }
+        setTimeout(initEditor, setTimeoutDelay);
+      }
+      else if (document.readyState == "complete") { setTimeoutCount=setTimeoutCountMax; }
+      else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initDiv, setTimeoutDelay); }
     }
 
     //wait for Ace load and init it
     initEditor = function () {
-        setTimeoutCount += 1;
-        console.log('initEd-'+setTimeoutCount);
+      setTimeoutCount += 1;
+      console.log('initEd-'+setTimeoutCount);
 
-        if(typeof(ace)=="object"){
-            var editor = ace.edit("editor"),
-                ed=$("#editor");
-            editor.getSession().setValue(t.val());
-            editor.getSession().setTabSize(2);
-            editor.renderer.setShowInvisibles(true);
-            editor.setReadOnly(true);
-            if ( $('input[value=change]').length > 0) {
-                if ( $('input[name^=diff]').val().indexOf("y") > -1 ){
-                    editor.getSession().setTabSize(8);
-                    editor.getSession().setMode("ace/mode/sh");
-                }
-                else {
-                    editor.getSession().setMode("ace/mode/diff");
-                    editor.getSession().setUseWrapMode(false);
-                    editor.renderer.setShowGutter(false);
-                    editor.setTheme("ace/theme/clouds");
-                    editor.setShowPrintMargin(false);
-                }
-            }
-            else {
-                editor.getSession().setMode("ace/mode/sh");
-                editor.getSession().setUseWrapMode(true);
-                editor.setShowPrintMargin(true);
-            }
-
-            $('#editor').append('<div id="resize">');
-            $("#resize").attr('draggable','true');
-            $("#resize").bind('dragstart', function(event) {
-                ed.data("height", ed.height());
-                ed.data("y", event.pageY);
-            }).bind("drag", function(event) {
-                ed.height(Math.max(ed.data("height") - ed.data("y") + event.pageY, 300)+ "px");
-            }).bind('dragend', function(event) {
-                editor.resize();
-            });
-
-            setTimeout(initTbl, setTimeoutDelay);
+      if(typeof(unsafeWindow.ace)=="object"){
+        unsafeWindow.ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/");
+        var editor = unsafeWindow.ace.edit("editor"),
+            ed=$("#editor");
+        editor.getSession().setValue(t.val());
+        editor.getSession().setTabSize(2);
+        editor.renderer.setShowInvisibles(true);
+        editor.setReadOnly(true);
+        if ( $('input[value=change]').length > 0) {
+          if ( $('input[name^=diff]').val().indexOf("y") > -1 ){
+            editor.getSession().setTabSize(8);
+            editor.getSession().setMode("ace/mode/sh");
+          }
+          else {
+            editor.getSession().setMode("ace/mode/diff");
+            editor.getSession().setUseWrapMode(false);
+            editor.renderer.setShowGutter(false);
+            editor.setTheme("ace/theme/clouds");
+            editor.setShowPrintMargin(false);
+          }
         }
-        else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initEditor, setTimeoutDelay); }
+        else {
+          editor.getSession().setMode("ace/mode/sh");
+          editor.getSession().setUseWrapMode(true);
+          editor.setShowPrintMargin(true);
+        }
+
+        $('#editor').append('<div id="resize">');
+        $("#resize").mousedown(function(e){
+          e.preventDefault();
+          ed.data("height", ed.height());
+          ed.data("y", e.pageY);
+          $(document).mousemove(function(e){
+            ed.height(Math.max(ed.data("height") - ed.data("y") + e.pageY, 300)+ "px");
+         })
+        });
+        $(document).mouseup(function(e){
+          if(ed.data("height")){
+            ed.data("height", 0);
+            $(document).unbind('mousemove');
+            editor.resize();
+          }
+        });
+
+        setTimeout(initTbl, setTimeoutDelay);
+      }
+      else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(initEditor, setTimeoutDelay); }
     }
 
     setTimeout(init, setTimeoutDelay);
 }
 //Search for account
 else if(window.location.pathname=='/asp/Administrator/ViewAccounts.asp') {
-    var init,
-        lastChecked = null;
+  var init,
+      lastChecked = null;
 
-    init = function () {
-        setTimeoutCount += 1;
-        console.log('init-'+setTimeoutCount);
+  init = function () {
+    setTimeoutCount += 1;
+    console.log('init-'+setTimeoutCount);
 
-    	if (typeof($)=='function' && $("b:contains('Dedicated Exchange')").length) {
-          var tr=$("b:contains('Exchange Hosting')").closest('table').find('tr'),
-              h=window.location.hostname.replace('hosting','exchange');
+    if (typeof($)=='function' && $("b:contains('Dedicated Exchange')").length) {
+      var tr=$("b:contains('Exchange Hosting')").closest('table').find('tr'),
+          h=window.location.hostname.replace('hosting','exchange');
 
-          if (tr[3].cells.length>1){
-              console.log('Adding links');
-              for (i=3;i<tr.length-2;i++){
-                  tr[i].cells[1].innerHTML="<a href='https://"+h+"/asp/Administrator/ModifyAccount.asp?accountID="+tr[i].cells[0].textContent+"'>"+tr[i].cells[1].textContent+"</a>";
-              }
-          }
-
-          setTimeoutCount=setTimeoutCountMax;
+      if (tr[3].cells.length>1){
+        console.log('Adding links');
+        for (i=3;i<tr.length-2;i++){
+          tr[i].cells[1].innerHTML="<a href='https://"+h+"/asp/Administrator/ModifyAccount.asp?accountID="+tr[i].cells[0].textContent+"'>"+tr[i].cells[1].textContent+"</a>";
         }
-        else if (document.readyState == "complete") { setTimeoutCount=setTimeoutCountMax; }
-        else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
+      }
+
+      setTimeoutCount=setTimeoutCountMax;
     }
-    setTimeout(init, setTimeoutDelay);
+    else if (document.readyState == "complete") { setTimeoutCount=setTimeoutCountMax; }
+    else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
+  }
+  setTimeout(init, setTimeoutDelay);
 }
-//Ping each 15min for cookie keepalive
+//Ping each 5min for cookie keepalive
 else if(window.location.pathname=='/asp/Administrator/Menu.asp') {
   ping = function(){
     if(document.readyState == "complete"){
-      $ = jQuery;
       $.ajax('/asp/Administrator/LookupAccounts.asp');
     }
     setTimeout(ping, 1000*60*5);
