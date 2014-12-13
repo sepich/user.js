@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2014.12.13
+// @version     2014.12.13.2
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -19,7 +19,7 @@
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/ViewAccounts.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Menu.asp
-// @icon        http://www.intermedia.net/apple-touch-icon-57-precomposed.png
+// @icon        http://intermedia.net/assets/tracked/img/favicon.ico
 // @run-at      document-start
 // @grant       GM_getResourceText
 // @updateURL   https://openuserjs.org/install/sepich/HPforLSA.user.js
