@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2014.12.13.2
+// @version     2014.12.20
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -118,7 +118,7 @@ if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp
 
           $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
             if($(this).closest('tr').css('display') != "none") {
-              $(this).attr('checked', lastChecked.checked);
+              this.checked=lastChecked.checked;
               $(this).trigger('change');
             }
           });
@@ -269,7 +269,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
           var end = $chkboxes.index(lastChecked);
 
           $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
-            $(this).attr('checked', lastChecked.checked);
+            this.checked=lastChecked.checked;
             $(this).trigger('change');
           });
         }
