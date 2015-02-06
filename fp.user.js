@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2014.12.11
+// @version     2015.02.06
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -93,6 +93,8 @@ else if(jQ('div#ESC__bNotes textarea').length){
       jQ(this).after(')');
       if( /^S[EW]H$/.test(jQ('#HP__bProduct').text()) ) jQ(this).after('/<a href="https://hosting.intermedia.net/asp/User/LoginToAccount.asp?accountID='+jQ('#Organization').text()+'" target="_blank">Login</a>');
       if(/al-[0-9]+/.test(jQ(this).text()) ) jQ(this).after('/<a href="https://eiger.accessline.com/atlas/page/enterprise/lf/view/'+jQ(this).text().replace(/^al-/,'')+'" target="_blank">Atlas</a>');
+      if( /^SWH$/.test(jQ('#HP__bProduct').text()) ) jQ(this).after('/<a href="https://hosting.intermedia.net/asp/Administrator/ModifyAccount.asp?accountID='+jQ('#Organization').text()+'" target="_blank">Modify</a>');
+      if( /^SEH$/.test(jQ('#HP__bProduct').text()) ) jQ(this).after('/<a href="https://exchange.intermedia.net/asp/Administrator/ModifyAccount.asp?accountID='+jQ('#Organization').text()+'" target="_blank">Modify</a>');
       jQ(this).after(' (<a href="https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp?Where=Accounts.userName%20LIKE%20%27'+jQ(this).text()+'%25%27" target="_blank">HP</a>');
     }
   });
