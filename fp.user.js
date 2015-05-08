@@ -81,7 +81,7 @@ if(jQ('div#Technical__bInformation').length){
 }
 
 //view case
-else if(jQ('div#ESC__bNotes textarea').length){
+else if(/^Case.*Intermedia Support$/.test(document.title)){
   var id;
   console.log('view case');
   if(jQ('input#Account__bNotes').length){
