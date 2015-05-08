@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2015.02.06
+// @version     2015.05.08
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
