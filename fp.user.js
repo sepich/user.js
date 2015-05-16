@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2015.05.08
+// @version     2015.05.16
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -73,6 +73,33 @@ if(jQ('select#Impacted__bServices').length){
   console.log('edit change control');
   jQ('select#Impacted__bServices').css('height','300px');
   jQ('select#Impacted__bProduction__bUnit').css('height','300px');
+  jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').attr('onchange','');
+  jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').change(function(){
+    var month=jQ('#DATE_S_MonthInput_Maintenance__bDate_S_Month').val(),
+        day=jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').val(),
+        year=jQ('#DATE_S_YearInput_Maintenance__bDate_S_Year').val();
+    if (month&&day&&year) { //if dates are not set, we should not use them
+      var theDay = new Date(year, (month-1), day); //month -1, because in JS monthes start from 0, and in FP - from 1
+      jQ("input[name='Implementation__bDate_datetime']" ).val(day+'/'+month+'/'+year+' 11:00 PM');
+      theDay.setDate(theDay.getDate()+1);
+      jQ("input[name='Notification__bEnd__bTime_datetime']" ).val(theDay.getDate()+'/'+(theDay.getMonth()+1)+'/'+theDay.getFullYear()+' 3:00 AM');
+    }
+  });
+  //check for field change by js
+  var interval;
+  function chckPop(){
+    var e=jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day'),
+        lastVal = e.data('last-value');
+    if (lastVal !== e.val()) {
+      e.change();
+      clearInterval(interval);
+    }
+  }
+  jQ('a[title=Calendar]').click(function(){
+    var e=jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day');
+    e.data('last-value', e.val());
+    interval=setInterval(chckPop, 100);
+  });
 }
 
 //change control view
