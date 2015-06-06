@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2015.05.16
+// @version     2015.06.06
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -33,6 +33,30 @@ var css = hereDoc(function() {/*!
   b.esc_user {
    border-top: 1px solid #CCC;
    display: block;
+   cursor: pointer;
+  }
+  b.esc_user::before {
+    background: rgba(0, 0, 0, 0) url("/MRimg/minus.gif") no-repeat;
+    content: "";
+    display: block;
+    float: left;
+    height: 20px;
+    width: 16px;
+    margin: 3px 0 0;
+  }
+  b.esc_user.collapsed::before {
+    background: rgba(0, 0, 0, 0) url("/MRimg/plus.gif") no-repeat;
+    content: "";
+    display: block;
+    float: left;
+    height: 20px;
+    width: 16px;
+    margin: 3px 0 0;
+  }
+  div.collapsed {
+    max-height: 203px;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 100%) repeat scroll 0 0;
   }
   div.descShowAll div.descriptionTimestamp {border-top: 1px solid #CCC;}
   u { font-family: monospace; text-decoration:none;}
@@ -46,6 +70,7 @@ var css = hereDoc(function() {/*!
     padding: 1px 2px;
     color: #006699;
   }
+
 */});
 
 //htmlizer for plain text in escalation notes
@@ -55,11 +80,11 @@ function escnotes(txt){
   txt=txt.replace(/-->/g,'&gt;');
   txt=txt.replace(/>/g,'&gt;');
   txt=txt.replace(/defang_@/g,'@');
-  txt=txt.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"\n<b class='esc_user'>\$1</b>");
+  txt='<div>'+txt.replace(/\n(Entered on [0-9\-]+ at [0-9\:]+ by .*?)\n/mg,"</div>\n<b class='esc_user'>\$1</b><div class='collapsible'>");
   txt=txt.replace(/\r\n|\n/g,'<br>');
   txt=txt.replace(/(http[s]?:\/\/[^ )\n\r"<>]+)/g,'<a href="'+"$1"+'" target="_blank">'+"$1</a>");
   txt=txt.replace(/ (gid:)(\S+) /g,' <a href="http://eiger.accessline.com/sw/SmartWatcher.html?type=gid&gid='+"$2"+'&internal=true" target="_blank">'+"$1</a> <u>$2</u> ");
-  return txt;
+  return txt+'</div>';
 }
 
 //general css preparations
@@ -133,6 +158,12 @@ else if(/^Case.*Intermedia Support$/.test(document.title)){
   jQ('label#ESC__bNotes_label').css('display','none');
   jQ('div#ESC__bNotes').after('<div id="esc_note">'+esc+'</div>');
   jQ('div#reportButton').closest('table').parent().after('<td><a class="ctlbut" href="#Description_ecHeading">Description</a></td>');
+  jQ('b.esc_user').click(function(){
+    if(jQ(this).next().height() > 200) jQ(this).toggleClass('collapsed').next().toggleClass('collapsed');
+  });
+  jQ('b.esc_user').each(function() {
+    if(jQ(this).next().height() > 600) jQ(this).addClass('collapsed').next().addClass('collapsed');
+  });
 }
 
 //edit case
@@ -143,6 +174,12 @@ else if(jQ('#ESC__bNotes_originalData').length){
   jQ('textarea#ESC__bNotes').css('width','90%');
   jQ('div#ESC__bNotes_originalDataDiv').parent('div').append('<div id="esc_notes">'+esc+'</div>');
   jQ('div#ESC__bNotes_originalDataDiv').css('display','none');
+  jQ('b.esc_user').click(function(){
+    if(jQ(this).next().height() > 200) jQ(this).toggleClass('collapsed').next().toggleClass('collapsed');
+  });
+  jQ('b.esc_user').each(function() {
+    if(jQ(this).next().height() > 600) jQ(this).addClass('collapsed').next().addClass('collapsed');
+  });
 }
 
 //view GIRR
