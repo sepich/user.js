@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2015.06.06
+// @version     2015.07.04
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -104,10 +104,16 @@ if(jQ('select#Impacted__bServices').length){
         day=jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').val(),
         year=jQ('#DATE_S_YearInput_Maintenance__bDate_S_Year').val();
     if (month&&day&&year) { //if dates are not set, we should not use them
-      var theDay = new Date(year, (month-1), day); //month -1, because in JS monthes start from 0, and in FP - from 1
-      jQ("input[name='Implementation__bDate_datetime']" ).val(day+'/'+month+'/'+year+' 11:00 PM');
-      theDay.setDate(theDay.getDate()+1);
-      jQ("input[name='Notification__bEnd__bTime_datetime']" ).val(theDay.getDate()+'/'+(theDay.getMonth()+1)+'/'+theDay.getFullYear()+' 3:00 AM');
+      var to = new Date(year, (month-1), day); //month -1, because in JS monthes start from 0, and in FP - from 1
+      to.setDate(to.getDate()+1); //calculate month overlap
+      if (jQ("#Maintenance__bDate table th:first").text()=='Mon') {
+        jQ("input[name='Implementation__bDate_datetime']" ).val(month+'/'+day+'/'+year+' 11:00 PM');
+        jQ("input[name='Notification__bEnd__bTime_datetime']" ).val((to.getMonth()+1)+'/'+to.getDate()+'/'+to.getFullYear()+' 3:00 AM');
+      }
+      else{
+        jQ("input[name='Implementation__bDate_datetime']" ).val(day+'/'+month+'/'+year+' 11:00 PM');
+        jQ("input[name='Notification__bEnd__bTime_datetime']" ).val(to.getDate()+'/'+(to.getMonth()+1)+'/'+to.getFullYear()+' 3:00 AM');
+      }
     }
   });
   //check for field change by js
