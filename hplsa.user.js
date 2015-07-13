@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2015.07.11
+// @version     2015.07.13
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -195,14 +195,14 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       var cf=$("select[name=configFile]"),
           i=cf.children().index(cf.children().filter(":selected"));
       if(i>2) {
-        cf.before('<input type="button" class="sm" id="prev" value="&lt;" title="Go to next file">');
+        cf.before('<input type="button" class="sm" id="prev" value="&lt;" title="Go to previous file">');
         $("#prev").click(function() {
           cf.val(cf.children().eq(i-1).val());
           cf.trigger("change");
         });
       }
       if(i<cf.children().length-1) {
-        cf.after('<input type="button" class="sm" id="next" value="&gt;" title="Go to previous file">');
+        cf.after('<input type="button" class="sm" id="next" value="&gt;" title="Go to next file">');
         $("#next").click(function() {
           cf.val(cf.children().eq(i+1).val());
           cf.trigger("change");
