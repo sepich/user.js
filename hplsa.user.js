@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2015.07.13
+// @version     2015.09.29
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -47,7 +47,7 @@ var css = hereDoc(function() {/*!
 .ace-tm span.ace_invisible { color: #FFF; }
 .ace-tm .ace_marker-layer div.ace_selected-word { background: #8F8; border: none; }
 div.ace_scrollbar {bottom: 16px !important;}
-input.sm {padding: 3px !important; margin-right: 0;}
+input.sm {padding: 3px !important; margin-right: 0; border-right: 1px solid #ccc;}
 
 #resize {
   width: 15px;
@@ -166,7 +166,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     // only load editor when there is editing field
     if (typeof($)=='function') {
       insertCached();
-      $('head').append('<style type="text/css" id="ace-css">');
+      $('head').append('<style type="text/css" id="ace-css">');     
       $('#ace-css').html(css);
       setTimeout(initDiv, setTimeoutDelay);
     }
@@ -212,6 +212,13 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       $('select[name=version]').after('<input type="button" class="sm" id="reload" value="&#8634" title="Reload status of selected file">');
       $("#reload").click(function() {
         cf.trigger("change");
+      });
+
+      //add copy button
+      $('input#next').after('<input type="button" class="sm" id="copy" value="&#0169" title="Copy filename to buffer">');
+      $('#copy').click(function() {
+        var fileName = $('select[name=configFile] option:selected').text();
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", fileName);
       });
 
       setTimeout(initEditor, setTimeoutDelay);
