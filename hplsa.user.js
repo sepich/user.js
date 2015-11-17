@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2015.09.29
+// @version     2015.11.17
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -215,7 +215,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
       });
 
       //add copy button
-      $('input#next').after('<input type="button" class="sm" id="copy" value="&#0169" title="Copy filename to buffer">');
+      cf.parent('td').children().last().after('<input type="button" class="sm" id="copy" value="&#0169" title="Copy filename to buffer">');
       $('#copy').click(function() {
         var fileName = $('select[name=configFile] option:selected').text();
         window.prompt("Copy to clipboard: Ctrl+C, Enter", fileName);
