@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2015.11.17
+// @version     2016.01.11
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -172,6 +172,21 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     }
     else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
   }
+
+  //wait for boxType select and sort it
+  $('select[name=boxType]').ready(function() {
+    console.log('sort boxType')
+    var t = $('select[name=boxType]'),
+        selected = $(t).val(); /* preserving original selection, step 1 */      
+    $(t).append(
+      $(t).find("option").remove().sort(function(a, b) {
+        var at = $(a).text().toLowerCase(), 
+            bt = $(b).text().toLowerCase();
+        return (at == '[linux]' || at < bt)? -1 : ((at > bt )?1:0);
+      })
+    );
+    $(t).val(selected); /* preserving original selection, step 2 */
+  });
 
   //wait for textarea and replace it
   initDiv =function(){
