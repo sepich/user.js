@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2015.11.04
+// @version     2016.03.10
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -100,22 +100,33 @@ if(jQ('select#Impacted__bServices').length){
   jQ('select#Impacted__bProduction__bUnit').css('height','300px');
   jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').attr('onchange','');
   jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').change(function(){
+    SetImpDate();
+  });
+  jQ('#Maintenance__bWindow').change(function(){
+    SetImpDate();
+  });
+  //set implementation date based on Maintenance Date and MW
+  function SetImpDate(){
     var month=jQ('#DATE_S_MonthInput_Maintenance__bDate_S_Month').val(),
         day=jQ('#DATE_S_DayInput_Maintenance__bDate_S_Day').val(),
-        year=jQ('#DATE_S_YearInput_Maintenance__bDate_S_Year').val();
+        year=jQ('#DATE_S_YearInput_Maintenance__bDate_S_Year').val(),
+        beginning=jQ('#Maintenance__bWindow option:selected').text().match(/[0-9]*[ap]m/g)[0].replace(/([0-9]*)([ap]m)/,"$1:00 $2").toUpperCase(),
+        end=jQ('#Maintenance__bWindow option:selected').text().match(/[0-9]*[ap]m/g)[1].replace(/([0-9]*)([ap]m)/,"$1:00 $2").toUpperCase();
+        shift= (beginning.match(/PM/)&&end.match(/AM/)) ? 1 : 0;
+
     if (month&&day&&year) { //if dates are not set, we should not use them
       var to = new Date(year, (month-1), day); //month -1, because in JS monthes start from 0, and in FP - from 1
-      to.setDate(to.getDate()+1); //calculate month overlap
+      to.setDate(to.getDate()+shift); //calculate month overlap
       if (jQ("#Maintenance__bDate table th").textContent=='Mon') {
-        jQ("input[name='Implementation__bStart__bTime_datetime']" ).val(month+'/'+day+'/'+year+' 11:00 PM');
-        jQ("input[name='Implementation__bEnd__bTime_datetime']" ).val((to.getMonth()+1)+'/'+to.getDate()+'/'+to.getFullYear()+' 3:00 AM');
+        jQ("input[name='Implementation__bStart__bTime_datetime']" ).val(month+'/'+day+'/'+year+' '+beginning);
+        jQ("input[name='Implementation__bEnd__bTime_datetime']" ).val((to.getMonth()+1)+'/'+to.getDate()+'/'+to.getFullYear()+' '+end);
       }
       else{
-        jQ("input[name='Implementation__bStart__bTime_datetime']" ).val(day+'/'+month+'/'+year+' 11:00 PM');
-        jQ("input[name='Implementation__bEnd__bTime_datetime']" ).val(to.getDate()+'/'+(to.getMonth()+1)+'/'+to.getFullYear()+' 3:00 AM');
+        jQ("input[name='Implementation__bStart__bTime_datetime']" ).val(day+'/'+month+'/'+year+' '+beginning);
+        jQ("input[name='Implementation__bEnd__bTime_datetime']" ).val(to.getDate()+'/'+(to.getMonth()+1)+'/'+to.getFullYear()+' '+end);
       }
     }
-  });
+  };
   //check for field change by js
   var interval;
   function chckPop(){
