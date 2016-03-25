@@ -2,7 +2,7 @@
 // @name        FP
 // @description Minor Footprints improvements
 // @namespace   sepa.spb.ru
-// @version     2016.03.10
+// @version     2016.03.25
 // @include     https://footprints.intermedia.net/MRcgi/MRTicketPage.pl*
 // @icon        https://footprints.intermedia.net/MRimg/uni.ico
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
@@ -117,7 +117,7 @@ if(jQ('select#Impacted__bServices').length){
     if (month&&day&&year) { //if dates are not set, we should not use them
       var to = new Date(year, (month-1), day); //month -1, because in JS monthes start from 0, and in FP - from 1
       to.setDate(to.getDate()+shift); //calculate month overlap
-      if (jQ("#Maintenance__bDate table th").textContent=='Mon') {
+      if (jQ("#Maintenance__bDate table th:first").text()=='Mon') {
         jQ("input[name='Implementation__bStart__bTime_datetime']" ).val(month+'/'+day+'/'+year+' '+beginning);
         jQ("input[name='Implementation__bEnd__bTime_datetime']" ).val((to.getMonth()+1)+'/'+to.getDate()+'/'+to.getFullYear()+' '+end);
       }
