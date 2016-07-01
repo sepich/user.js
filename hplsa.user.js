@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.01.11
+// @version     2016.07.01
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -384,6 +384,14 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     initDiv =function(){
       setTimeoutCount += 1;
       console.log('initDiv-'+setTimeoutCount);
+      
+      //change Configuration File View to add boxname
+      var boxName=/box=([^&]+)/.exec(location)[1],
+          configFile=/configFile=([^&]+)/.exec(location)[1].replace(/%2F/g, '/'),
+          boxType=/boxType=([^&]+)/.exec(location)[1],
+          version=location.href.match('version=([^&]+)');
+          version=version ? "v."+version[1]+" &lt;&gt; " : version='';
+      $('.header:first').html(boxType + ":" + configFile + " (" +version + "file on "+boxName + ")");
 
       t = $('textarea[name=content]');
       if (t.length) {
@@ -490,7 +498,8 @@ else if(window.location.pathname=='/asp/Administrator/ViewAccounts.asp') {
 else if(window.location.pathname=='/asp/Administrator/Menu.asp') {
   ping = function(){
     if(document.readyState == "complete"){
-      $.ajax('/asp/Administrator/LookupAccounts.asp');
+      $.ajax('https://hosting.intermedia.net/asp/Administrator/LookupAccounts.asp');
+      $.ajax('https://exchange.intermedia.net/asp/Administrator/LookupAccounts.asp');
     }
     setTimeout(ping, 1000*60*5);
   }
