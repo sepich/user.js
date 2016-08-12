@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.07.01
+// @version     2016.08.12
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -12,11 +12,13 @@
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/Configuration.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp*
+// @include     https://hosting.intermedia.net/asp/Administrator/Tools/DnsServer/DatabaseDomain.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/ViewAccounts.asp*
 // @include     https://hosting.intermedia.net/asp/Administrator/Menu.asp
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Tools/LinuxBoxes/Configuration.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Tools/LinuxBoxes/RunCommand.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Tools/LinuxBoxes/ConfigurationFileView.asp*
+// @include     https://hosting.qaintermedia.net/asp/Administrator/Tools/DnsServer/DatabaseDomain.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/ViewAccounts.asp*
 // @include     https://hosting.qaintermedia.net/asp/Administrator/Menu.asp
 // @icon        http://intermedia.net/assets/tracked/img/favicon.ico
@@ -166,7 +168,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     // only load editor when there is editing field
     if (typeof($)=='function') {
       insertCached();
-      $('head').append('<style type="text/css" id="ace-css">');     
+      $('head').append('<style type="text/css" id="ace-css">');
       $('#ace-css').html(css);
       setTimeout(initDiv, setTimeoutDelay);
     }
@@ -177,10 +179,10 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
   $('select[name=boxType]').ready(function() {
     console.log('sort boxType')
     var t = $('select[name=boxType]'),
-        selected = $(t).val(); /* preserving original selection, step 1 */      
+        selected = $(t).val(); /* preserving original selection, step 1 */
     $(t).append(
       $(t).find("option").remove().sort(function(a, b) {
-        var at = $(a).text().toLowerCase(), 
+        var at = $(a).text().toLowerCase(),
             bt = $(b).text().toLowerCase();
         return (at == '[linux]' || at < bt)? -1 : ((at > bt )?1:0);
       })
@@ -384,7 +386,7 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
     initDiv =function(){
       setTimeoutCount += 1;
       console.log('initDiv-'+setTimeoutCount);
-      
+
       //change Configuration File View to add boxname
       var boxName=/box=([^&]+)/.exec(location)[1],
           configFile=/configFile=([^&]+)/.exec(location)[1].replace(/%2F/g, '/'),
@@ -486,6 +488,104 @@ else if(window.location.pathname=='/asp/Administrator/ViewAccounts.asp') {
           tr[i].cells[1].innerHTML="<a href='https://"+h+"/asp/Administrator/ModifyAccount.asp?accountID="+tr[i].cells[0].textContent+"'>"+tr[i].cells[1].textContent+"</a>";
         }
       }
+
+      setTimeoutCount=setTimeoutCountMax;
+    }
+    else if (document.readyState == "complete") { setTimeoutCount=setTimeoutCountMax; }
+    else if (setTimeoutCount < setTimeoutCountMax) { setTimeout(init, setTimeoutDelay); }
+  }
+  setTimeout(init, setTimeoutDelay);
+}
+//DNS Manager
+else if (window.location.pathname == '/asp/Administrator/Tools/DnsServer/DatabaseDomain.asp') {
+  var lastChecked=null,
+  init=function(){
+    setTimeoutCount += 1;
+    console.log('init-' + setTimeoutCount);
+    // only edit buttons when they all are loaded
+    if ($('input[value="Reload domain on dnscache servers"]').length) {
+      $('head').append('<style type="text/css" id="tbl-css">');
+      $('#tbl-css').html(css);
+      $('form[name=EditRecordsForm] table').addClass('srv');
+
+      //add checkboxes
+      $('form[name=EditRecordsForm] table tr').each(function(){
+        var btn = $(this).find('input[value=Delete]');
+        if($(btn).length){
+          var id=$(btn).attr('onclick').match(/recordToDelete.value="(\d*)"/)[1];
+          $(this).children().first().prepend(
+            $('<input type="checkbox">').data('id',id).addClass('massDelete').change(function(){
+              if(this.checked) $(this).closest('tr').addClass('sel');
+              else $(this).closest('tr').removeClass('sel');
+              var num=$('.sel').length;
+              if(num) $('#delSelected').attr("disabled", false).val("Delete Selected ("+num+")");
+              else $('#delSelected').attr("disabled", true).val("Delete Selected");
+            })
+          )
+        }
+      })
+      //shift-click for checkboxes
+      var $chkboxes = $('input.massDelete');
+      $chkboxes.click(function(e){
+        if(e.shiftKey && lastChecked){
+          var start = $chkboxes.index(this);
+          var end = $chkboxes.index(lastChecked);
+
+          $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
+            if($(this).closest('tr').css('display') != "none") {
+              this.checked=lastChecked.checked;
+              $(this).trigger('change');
+            }
+          });
+        }
+        lastChecked = this;
+      })
+
+      //add Delete button
+      $('form[name=EditRecordsForm] table').find('td').last().append(
+        $('<input type="button" id="delSelected">').val("Delete Selected").attr("disabled",true).click(function(){
+          var data=$('form[name=EditRecordsForm]').serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+          data['action']='deleteRecord';
+          $('#delSelected').attr("disabled", true);
+
+          $('.massDelete:checked').each(function(){
+            var id=$(this).data('id'),
+                tr=$(this).closest('tr');
+                
+            data['recordToDelete']=id;
+            $.ajax({
+              type: 'POST',
+              url: $('form[name=EditRecordsForm]').attr('action'),
+              data: data,
+              success: function(data){
+                $(tr).remove();
+                var num=$('.sel').length;
+                if(num) $('#delSelected').val("Deleting Selected ("+num+")...");
+                else window.location=window.location; //reload page after mass deletion
+              },
+              error: function(xhr, status, err){ console.log(status+err); }
+            })
+
+          })
+        })
+      )
+
+      //filter records
+      $('form[name=EditRecordsForm] table').find('td').first().html(
+        $('<input type="text" style="width:100%;">').on('change keyup', function () {
+          var filter=$(this).val();
+              trs=$('form[name=EditRecordsForm] table tr');
+
+          $(trs).each(function(i,tr){
+            if(i==0 || i>$(trs).length-5) return true; //skip headers/footers
+            if(filter==='' || $(tr).children('td').first().text().contains(filter) ) $(tr).show();
+            else $(tr).hide();
+          })
+        })
+      );
 
       setTimeoutCount=setTimeoutCountMax;
     }
