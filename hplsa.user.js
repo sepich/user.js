@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.08.12
+// @version     2016.08.13
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
