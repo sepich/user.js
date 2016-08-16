@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.08.13
+// @version     2016.08.16
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -581,7 +581,7 @@ else if (window.location.pathname == '/asp/Administrator/Tools/DnsServer/Databas
 
           $(trs).each(function(i,tr){
             if(i==0 || i>$(trs).length-5) return true; //skip headers/footers
-            if(filter==='' || $(tr).children('td').first().text().contains(filter) ) $(tr).show();
+            if(filter==='' || $(tr).children('td').first().text().indexOf(filter)!=-1 ) $(tr).show();
             else $(tr).hide();
           })
         })
