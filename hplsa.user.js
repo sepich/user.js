@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.08.16
+// @version     2016.08.26
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -392,8 +392,8 @@ else if(window.location.pathname=='/asp/Administrator/Tools/LinuxBoxes/Configura
           configFile=/configFile=([^&]+)/.exec(location)[1].replace(/%2F/g, '/'),
           boxType=/boxType=([^&]+)/.exec(location)[1],
           version=location.href.match('version=([^&]+)');
-          version=version ? "v."+version[1]+" &lt;&gt; " : version='';
-      $('.header:first').html(boxType + ":" + configFile + " (" +version + "file on "+boxName + ")");
+          version=version ? "v"+version[1]+" &lt;&gt; " : version='';
+      $('.header:first').html(unescape(boxType) + ":" + configFile + ' ' + version + "file on "+boxName);
 
       t = $('textarea[name=content]');
       if (t.length) {
