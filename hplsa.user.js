@@ -2,7 +2,7 @@
 // @name        HPforLSA
 // @description Minor HostPilot improvements for LSAs
 // @namespace   sepa.spb.ru
-// @version     2016.08.26
+// @version     2017.04.08
 // @require     https://code.jquery.com/jquery-2.1.1.min.js
 // @resource ace    https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js
 // @resource sh     https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-sh.js
@@ -554,7 +554,7 @@ else if (window.location.pathname == '/asp/Administrator/Tools/DnsServer/Databas
           $('.massDelete:checked').each(function(){
             var id=$(this).data('id'),
                 tr=$(this).closest('tr');
-                
+
             data['recordToDelete']=id;
             $.ajax({
               type: 'POST',
@@ -576,12 +576,12 @@ else if (window.location.pathname == '/asp/Administrator/Tools/DnsServer/Databas
       //filter records
       $('form[name=EditRecordsForm] table').find('td').first().html(
         $('<input type="text" style="width:100%;">').on('change keyup', function () {
-          var filter=$(this).val();
+          var filter=$(this).val().toLowerCase();
               trs=$('form[name=EditRecordsForm] table tr');
 
           $(trs).each(function(i,tr){
             if(i==0 || i>$(trs).length-5) return true; //skip headers/footers
-            if(filter==='' || $(tr).children('td').first().text().indexOf(filter)!=-1 ) $(tr).show();
+            if(filter==='' || $(tr).children('td').first().text().toLowerCase().includes(filter) ) $(tr).show();
             else $(tr).hide();
           })
         })
@@ -601,7 +601,6 @@ else if(window.location.pathname=='/asp/Administrator/Menu.asp') {
       $.ajax('https://hosting.intermedia.net/asp/Administrator/LookupAccounts.asp');
       $.ajax('https://exchange.intermedia.net/asp/Administrator/LookupAccounts.asp');
     }
-    setTimeout(ping, 1000*60*5);
   }
-  setTimeout(ping, 1000*60*5);
+  setInterval(ping, 1000*60*5);
 }
